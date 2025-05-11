@@ -8,18 +8,18 @@ export const signup: RequestHandler = async (req, res) => {
     const { fullName, username, password, confirmPassword, gender } = req.body;
 
     if (!fullName || !username || !password || !confirmPassword || !gender) {
-      res.status(400).json({ message: "All fields are required" });
+      res.status(400).json({ error: "All fields are required" });
       return;
     }
 
     if (password !== confirmPassword) {
-      res.status(400).json({ message: "Passwords do not match" });
+      res.status(400).json({ error: "Passwords do not match" });
       return;
     }
 
     const user = await prisma.user.findUnique({ where: { username } });
     if (user) {
-      res.status(400).json({ message: "Username already exists" });
+      res.status(400).json({ error: "Username already exists" });
       return;
     }
 
@@ -49,11 +49,11 @@ export const signup: RequestHandler = async (req, res) => {
         profilePic: newUser.profilePic,
       });
     } else {
-      res.status(400).json({ message: "Invalid User Data" });
+      res.status(400).json({ error: "Invalid User Data" });
     }
   } catch (error: any) {
     console.error("Error during signup:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -62,19 +62,19 @@ export const login: RequestHandler = async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      res.status(400).json({ message: "All fields are required" });
+      res.status(400).json({ error: "All fields are required" });
       return;
     }
 
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) {
-      res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ error: "Invalid credentials" });
       return;
     }
 
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
-      res.status(400).json({ message: "Invalid credentials" });
+      res.status(400).json({ error: "Invalid credentials" });
       return;
     }
 
@@ -88,7 +88,7 @@ export const login: RequestHandler = async (req, res) => {
     });
   } catch (error: any) {
     console.error("Error during login:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -98,7 +98,7 @@ export const logout: RequestHandler = async (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error: any) {
     console.error("Error during logout:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -109,7 +109,7 @@ export const getMe: RequestHandler = async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ error: "User not found" });
       return;
     }
 
@@ -121,6 +121,6 @@ export const getMe: RequestHandler = async (req, res) => {
     });
   } catch (error: any) {
     console.error("Error in getMe controller:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };

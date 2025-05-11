@@ -3,6 +3,7 @@ import Home from "./_ui_design/pages/Home";
 import SignUp from "./_ui_design/pages/SignUp";
 import Login from "./_ui_design/pages/Login";
 import { useAuthContext } from "./context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const { authUser, isLoading } = useAuthContext();
@@ -28,6 +29,7 @@ function App() {
           </>
         )}
       </Routes>
+      <Toaster />
     </div>
   );
 }
