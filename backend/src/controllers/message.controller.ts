@@ -48,7 +48,7 @@ export const sendMessage: RequestHandler = async (req, res) => {
         },
       });
     }
-    res.status(201).json({ newMessage });
+    res.status(201).json(newMessage);
   } catch (error: any) {
     console.error("Error sending message:", error.message);
     res.status(500).json({ message: "Internal server error" });

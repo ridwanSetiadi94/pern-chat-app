@@ -6,6 +6,7 @@ import messageRoutes from "./routes/message.route.js"; // for message routes
 import dotenv from "dotenv"; // for loading environment variables
 dotenv.config(); // Load environment variables from .env file
 
+const PORT = process.env.PORT || 5001; // Set the port from environment variables or default to 5000
 const app = express();
 
 app.use(cookieParser()); // for parsing cookies
@@ -14,6 +15,6 @@ app.use(express.json()); // for parsing application/json
 app.use("/api/auth", authRoutes); // for authentication routes
 app.use("/api/messages", messageRoutes); // for message routes
 
-app.listen(5000, () => {
-  console.log("Server is running on http://localhost:5000"); // for testing
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`); // for testing
 });

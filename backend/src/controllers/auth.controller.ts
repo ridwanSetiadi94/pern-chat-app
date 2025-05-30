@@ -2,10 +2,17 @@ import { RequestHandler } from "express";
 import prisma from "../db/prisma.js";
 import bcryptjs from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
+import { SignupRequest } from "../types/signup.js";
 
 export const signup: RequestHandler = async (req, res) => {
   try {
-    const { fullName, username, password, confirmPassword, gender } = req.body;
+    const {
+      fullName,
+      username,
+      password,
+      confirmPassword,
+      gender,
+    }: SignupRequest = req.body;
 
     if (!fullName || !username || !password || !confirmPassword || !gender) {
       res.status(400).json({ error: "All fields are required" });
