@@ -26,23 +26,16 @@ const userSocketMap: { [key: string]: string } = {}; // {userId: socketId}
 
 // Start the server
 io.on("connection", (socket) => {
-  console.log("A user connected", socket.id);
+  // console.log("A user connected", socket.id);
   // Emit a welcome message to the newly connected user
   const userId = socket.handshake.query.userId as string; // Assuming userId is passed as a query parameter
 
   if (userId) userSocketMap[userId] = socket.id; // Store the socket ID for the user
   io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Emit the list of online users to all connected clients
 
-  // Handle incoming messages
-  socket.on("message", (message) => {
-    console.log("Message received:", message);
-    // Broadcast the message to all connected clients
-    io.emit("message", message);
-  });
-
   // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("A user disconnected", socket.id); // Log the disconnection
+    // console.log("A user disconnected", socket.id); // Log the disconnection
     delete userSocketMap[userId]; // Remove the user from the userSocketMap
     io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Emit the updated list of online users
   });
