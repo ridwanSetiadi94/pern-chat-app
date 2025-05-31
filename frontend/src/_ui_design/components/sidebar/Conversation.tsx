@@ -1,4 +1,5 @@
 import { useConversationContext } from "../../../context/ConversationContext";
+import { useSocketContext } from "../../../context/SocketContext";
 
 //Conversation component to display a single user
 const Conversation = ({
@@ -9,9 +10,11 @@ const Conversation = ({
   emoji: string;
 }) => {
   const { selectedConversation, setSelectedConversation } =
-    useConversationContext();
-  const isSelected = selectedConversation?.id === conversation.id;
-  const isOnline = false; // Placeholder for online status
+    useConversationContext(); // Get selected conversation (user) and setter from ConversationContext
+  const isSelected = selectedConversation?.id === conversation.id; // Check if the conversation is selected
+
+  const { onlineUsers } = useSocketContext(); // Get online users from SocketContext
+  const isOnline = onlineUsers.includes(conversation.id); // Check if the user is online
   return (
     <>
       <div
@@ -42,4 +45,5 @@ const Conversation = ({
     </>
   );
 };
+
 export default Conversation;

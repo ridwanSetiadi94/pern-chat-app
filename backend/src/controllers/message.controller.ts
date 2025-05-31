@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import prisma from "../db/prisma.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage: RequestHandler = async (req, res) => {
   try {
@@ -48,10 +49,17 @@ export const sendMessage: RequestHandler = async (req, res) => {
         },
       });
     }
+
+    const receiverSocketId = getReceiverSocketId(receiverId); // Get the socket ID of the recipient using the utility function
+    if (receiverSocketId) {
+      // Check if the recipient is online
+      io.to(receiverSocketId).emit("newMessage", newMessage); // Emit the new message to the recipient's socket
+    }
+
     res.status(201).json(newMessage);
   } catch (error: any) {
     console.error("Error sending message:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -82,7 +90,7 @@ export const getMessages: RequestHandler = async (req, res) => {
     res.status(200).json(conversation.messages);
   } catch (error: any) {
     console.error("Error getting messages:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -105,6 +113,6 @@ export const getUserForSidebar: RequestHandler = async (req, res) => {
     res.status(200).json(users);
   } catch (error: any) {
     console.error("Error getting user sidebar:", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };

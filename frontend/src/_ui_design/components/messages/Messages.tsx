@@ -1,13 +1,16 @@
+import useChatScroll from "../../../hooks/useChatScroll";
 import useGetMessages from "../../../hooks/useGetMessages";
+import useListenMessages from "../../../hooks/useListenMessages";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import Message from "./Message";
 
 function Messages() {
   const { loading, messages } = useGetMessages();
-  console.log("Messages", messages);
+  useListenMessages();
+  const ref = useChatScroll(messages); // Custom hook to handle chat scrolling
 
   return (
-    <div className="px-4 flex-1 overflow-auto">
+    <div className="px-4 flex-1 overflow-auto" ref={ref}>
       {loading &&
         [...Array(3)].map((_, index) => <MessageSkeleton key={index} />)}
 
