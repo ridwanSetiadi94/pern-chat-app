@@ -27,8 +27,8 @@ export function useSocketContext(): SocketContextType {
   return context; // Return the context value
 }
 
-const socketURL =
-  import.meta.env.MODE === "development" ? "http://localhost:5001" : "/"; // Define the socket URL based on the environment
+const socketURL = import.meta.env.VITE_BACKEND_URL;
+console.log("Socket URL:", socketURL); // Log the socket URL for debugging
 
 export function SocketContextProvider({ children }: { children: ReactNode }) {
   // Create a provider component

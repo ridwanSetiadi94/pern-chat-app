@@ -9,7 +9,7 @@ const io = new Server(server, {
   // Create a new Socket.IO server instance
   cors: {
     // Configure CORS to allow requests from the frontend
-    origin: "http://localhost:5173", // Replace with your frontend URL
+    origin: "*", // Replace with your frontend URL
     methods: ["GET", "POST"], // Allow GET and POST methods
     credentials: true, // Allow cookies to be sent
   },
