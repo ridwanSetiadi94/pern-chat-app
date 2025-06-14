@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch backend/src --exec node --no-warnings --loader ts-node/esm backend/src/index.ts",
+    "clean": "rm -rf backend/dist frontend/dist",
     "build": "tsc && npm install && prisma generate --schema=backend/prisma/schema.prisma && npm install --prefix frontend && npm run build --prefix frontend",
     "start": "node backend/dist/src/index.js"
   },
@@ -18,6 +19,7 @@
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "nodemon": "^3.1.10",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },

@@ -15,7 +15,7 @@ function Messages() {
         [...Array(3)].map((_, index) => <MessageSkeleton key={index} />)}
 
       {!loading &&
-        messages.map((message) => (
+        messages?.map((message) => (
           <Message key={message.id} message={message} />
         ))}
 
