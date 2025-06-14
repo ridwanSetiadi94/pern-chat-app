@@ -15,11 +15,12 @@ function Messages() {
         [...Array(3)].map((_, index) => <MessageSkeleton key={index} />)}
 
       {!loading &&
-        messages?.map((message) => (
+        Array.isArray(messages) &&
+        messages.map((message) => (
           <Message key={message.id} message={message} />
         ))}
 
-      {!loading && messages.length === 0 && (
+      {!loading && Array.isArray(messages) && messages.length === 0 && (
         <div className="flex items-center justify-center w-full h-full">
           <div className="px-4 text-center sm:text-lg md:text-xl text-gray-200 font-semibold flex flex-col items-center gap-2">
             <p>No messages yet</p>
