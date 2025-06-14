@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore backend and frontend build output
+/backend/dist/
+/frontend/dist/
