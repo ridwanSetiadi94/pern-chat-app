@@ -10,7 +10,6 @@ const io = new Server(server, {
   cors: {
     // Configure CORS to allow requests from the frontend
     origin: "*", // Replace with your frontend URL
-    methods: ["GET", "POST"], // Allow GET and POST methods
     credentials: true, // Allow cookies to be sent
   },
 });
