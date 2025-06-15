@@ -1,45 +1,56 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
 
-const server = http.createServer(app); // Create an HTTP server using the Express app
+const allowedOrigin =
+  process.env.NODE_ENV === "development"
+    ? process.env.CLIENT_URL_DEV || "http://localhost:5173"
+    : process.env.CLIENT_URL_PROD || "http://your-production-domain.com";
+
+if (!allowedOrigin) {
+  console.warn("No CLIENT_URL provided in environment variables.");
+}
+
 const io = new Server(server, {
-  // Create a new Socket.IO server instance
   cors: {
-    // Configure CORS to allow requests from the frontend
-    origin: "*", // Replace with your frontend URL
-    methods: ["GET", "POST"], // Allow GET and POST methods
-    credentials: true, // Allow cookies to be sent
+    origin: allowedOrigin,
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
-function getReceiverSocketId(receiverID: string) {
-  // This function retrieves the socket ID of a user based on their user ID
-  return userSocketMap[receiverID]; // If the user is online, return their socket ID
-}
-
-// This map will store the mapping of user IDs to their respective socket IDs
-// This allows us to send messages to specific users later if needed
 const userSocketMap: { [key: string]: string } = {}; // {userId: socketId}
 
-// Start the server
+function getReceiverSocketId(receiverID: string) {
+  return userSocketMap[receiverID];
+}
+
 io.on("connection", (socket) => {
-  // console.log("A user connected", socket.id);
-  // Emit a welcome message to the newly connected user
-  const userId = socket.handshake.query.userId as string; // Assuming userId is passed as a query parameter
+  const userId =
+    typeof socket.handshake.query.userId === "string"
+      ? socket.handshake.query.userId
+      : null;
 
-  if (userId) userSocketMap[userId] = socket.id; // Store the socket ID for the user
-  io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Emit the list of online users to all connected clients
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  }
 
-  // Handle disconnection
   socket.on("disconnect", () => {
-    // console.log("A user disconnected", socket.id); // Log the disconnection
-    delete userSocketMap[userId]; // Remove the user from the userSocketMap
-    io.emit("getOnlineUsers", Object.keys(userSocketMap)); // Emit the updated list of online users
+    if (userId) {
+      delete userSocketMap[userId];
+      io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    }
   });
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`Socket connected: ${socket.id} (userId: ${userId})`);
+  }
 });
 
-export { app, server, io, getReceiverSocketId }; // Export the app, server, io instance, and the function to get receiver socket ID
-// This allows us to use the same server instance in other parts of the application, such as in the main server file
+export { app, server, io, getReceiverSocketId };
